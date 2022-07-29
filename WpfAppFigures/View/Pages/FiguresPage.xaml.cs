@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace WpfApp1
+namespace WpfAppFigures.View.Pages
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for FiguresPage.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class FiguresPage : Page
     {
-        public MainWindow()
+        public FiguresPage()
         {
             InitializeComponent();
         }
