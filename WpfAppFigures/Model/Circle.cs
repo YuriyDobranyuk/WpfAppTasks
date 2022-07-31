@@ -6,6 +6,7 @@ namespace WpfAppFigures.Model
 {
     class Circle : Figure
     {
+        public override string Name { get; set; }
         public override Brush CurrentColor { get => currentColor; set => currentColor = value; }
         public override Shape Shape { get; set; }
         public override void Move(Canvas canvas)
@@ -20,17 +21,18 @@ namespace WpfAppFigures.Model
             }
             x += dx;
             y += dy;
-            Canvas.SetLeft(this.Shape, x);
-            Canvas.SetTop(this.Shape, y);
+            Canvas.SetLeft(Shape, x);
+            Canvas.SetTop(Shape, y);
         }
         public override void Draw(Canvas canvas)
         {
-            canvas.Children.Add(this.Shape);
-            Canvas.SetLeft(this.Shape, x);
-            Canvas.SetTop(this.Shape, y);
+            canvas.Children.Add(Shape);
+            Canvas.SetLeft(Shape, x);
+            Canvas.SetTop(Shape, y);
         }
         public Circle(Canvas canvas)
         {
+            Name = "Circle";
             x = rnd.Next(0, P_X_MAX);
             y = rnd.Next(0, P_Y_MAX);
             dx = deltaCoordinate[rnd.Next(0, deltaCoordinate.Length)];
@@ -46,8 +48,8 @@ namespace WpfAppFigures.Model
                 Height = 20
             };
             Shape elShape = el;
-            this.Shape = elShape;
-            this.Draw(canvas);
+            Shape = elShape;
+            Draw(canvas);
         }
     }
 }

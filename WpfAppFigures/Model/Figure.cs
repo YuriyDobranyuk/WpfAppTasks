@@ -13,6 +13,7 @@ namespace WpfAppFigures.Model
         protected int x, y, dx, dy;
         protected Brush currentColor;
         protected Random rnd = new Random();
+        public abstract string Name { get; set; }
         public abstract Shape Shape { get; set; }
         public abstract Brush CurrentColor {get; set;}
         public abstract void Move(Canvas canvas);

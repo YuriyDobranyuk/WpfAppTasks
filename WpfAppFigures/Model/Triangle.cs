@@ -7,6 +7,7 @@ namespace WpfAppFigures.Model
 {
     class Triangle : Figure
     {
+        public override string Name { get; set; }
         public override Brush CurrentColor { get => currentColor; set => currentColor = value; }
         public override Shape Shape { get; set; }
         public override void Move(Canvas canvas)
@@ -21,17 +22,18 @@ namespace WpfAppFigures.Model
             }
             x += dx;
             y += dy;
-            Canvas.SetLeft(this.Shape, x);
-            Canvas.SetTop(this.Shape, y);
+            Canvas.SetLeft(Shape, x);
+            Canvas.SetTop(Shape, y);
         }
         public override void Draw(Canvas canvas)
         {
-            canvas.Children.Add(this.Shape);
-            Canvas.SetLeft(this.Shape, x);
-            Canvas.SetTop(this.Shape, y);
+            canvas.Children.Add(Shape);
+            Canvas.SetLeft(Shape, x);
+            Canvas.SetTop(Shape, y);
         }
         public Triangle(Canvas canvas)
         {
+            Name = "Triangle";
             x = rnd.Next(0, P_X_MAX);
             y = rnd.Next(0, P_Y_MAX);
             CurrentColor = new SolidColorBrush(Color.FromRgb((byte) rnd.Next(0, 255),
@@ -51,8 +53,8 @@ namespace WpfAppFigures.Model
                 StrokeThickness = 1,
             };
             Shape el = myPolygon;
-            this.Shape = el;
-            this.Draw(canvas);
+            Shape = el;
+            Draw(canvas);
         }
     }
 }
