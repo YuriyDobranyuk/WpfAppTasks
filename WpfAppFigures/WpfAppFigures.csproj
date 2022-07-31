@@ -55,6 +55,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\Circle.cs" />
+    <Compile Include="Model\Figure.cs" />
+    <Compile Include="Model\RectangleFigure.cs" />
+    <Compile Include="Model\Triangle.cs" />
+    <Compile Include="Services\Commands\Base\Command.cs" />
+    <Compile Include="Services\Commands\LambdaCommand.cs" />
+    <Compile Include="ViewModel\BaseViewModel.cs" />
+    <Compile Include="ViewModel\FiguresViewModel.cs" />
     <Compile Include="View\Pages\FiguresPage.xaml.cs">
       <DependentUpon>FiguresPage.xaml</DependentUpon>
     </Compile>
@@ -101,9 +109,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\" />
-    <Folder Include="ViewModel\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

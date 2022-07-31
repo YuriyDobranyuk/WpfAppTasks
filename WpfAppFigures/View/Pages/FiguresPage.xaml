@@ -33,7 +33,7 @@
                 <TreeViewItem Header="Circle"/>
                 <TreeViewItem Header="Rectangle"/>
             </TreeView>
-            <Canvas Height="410" Width="700" Background="WhiteSmoke">
+            <Canvas Height="410" Width="700" Background="WhiteSmoke" x:Name="figuresCanvas" >
                 <Polygon Points="0,20 20,20 10,0" Stroke="Black" Fill="red" StrokeThickness="1"/>
                 <Ellipse Width="20" Height="20" Fill="GreenYellow" Stroke="Black" StrokeThickness="1"
                          Canvas.Left="5" Canvas.Top="20"/>
