@@ -1,10 +1,5 @@
-﻿using System;
-using System.Threading;
-using System.Windows.Controls;
-using System.Windows.Media.Animation;
-using System.Windows.Threading;
+﻿using System.Windows.Controls;
 using WpfAppFigures.ViewModel;
-using Figure = WpfAppFigures.Model.Figure;
 
 namespace WpfAppFigures.View.Pages
 {
