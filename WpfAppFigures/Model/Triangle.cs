@@ -1,60 +1,68 @@
-﻿using System.Windows;
+﻿using System.Threading;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace WpfAppFigures.Model
 {
-    class Triangle : Figure
+    internal class Triangle : Figure
     {
         public override string Name { get; set; }
         public override Brush CurrentColor { get => currentColor; set => currentColor = value; }
         public override Shape Shape { get; set; }
-        public override void Move(Canvas canvas)
+        public override int X { get => x; set => x = value; }
+        public override int Y { get => y; set => y = value; }
+        public override int DX { get => dx; set => dx = value; }
+        public override int DY { get => dy; set => dy = value; }
+        public override void Move(DispatcherTimer timer)
         {
-            if (x < 0 || x > P_X_MAX)
+            double x_val = X;
+            double y_val = Y;
+            double dx = DX;
+            double dy = DY;
+            timer.Tick += (sender, e) =>
             {
-                dx = -dx;
-            }
-            if (y < 0 || y > P_Y_MAX)
-            {
-                dy = -dy;
-            }
-            x += dx;
-            y += dy;
-            Canvas.SetLeft(Shape, x);
-            Canvas.SetTop(Shape, y);
+                if (x_val < 0 || x_val > P_X_MAX)
+                {
+                    dx = -dx;
+                }
+                if (y_val < 0 || y_val > P_Y_MAX)
+                {
+                    dy = -dy;
+                }
+                x_val += dx;
+                y_val += dy;
+                Canvas.SetLeft(Shape, x_val);
+                Canvas.SetTop(Shape, y_val);
+            };
         }
-        public override void Draw(Canvas canvas)
+        public override void Draw()
         {
-            canvas.Children.Add(Shape);
-            Canvas.SetLeft(Shape, x);
-            Canvas.SetTop(Shape, y);
-        }
-        public Triangle(Canvas canvas)
-        {
-            Name = "Triangle";
-            x = rnd.Next(0, P_X_MAX);
-            y = rnd.Next(0, P_Y_MAX);
-            CurrentColor = new SolidColorBrush(Color.FromRgb((byte) rnd.Next(0, 255),
-                            (byte) rnd.Next(0, 255), (byte) rnd.Next(0, 255)));
-            PointCollection trianglePointCollection = new PointCollection();
-            trianglePointCollection.Add(new Point(0, 20));
-            trianglePointCollection.Add(new Point(20, 20));
-            trianglePointCollection.Add(new Point(10, 0));
-            //trianglePointCollection.Add(new Point(x, y + 20));
-            //trianglePointCollection.Add(new Point(x + 20, y + 20));
-            //trianglePointCollection.Add(new Point(x + 10, y));
             Polygon myPolygon = new Polygon()
             {
                 Fill = CurrentColor,
-                Points = trianglePointCollection,
+                Points = new PointCollection { new Point(0, 20),
+                                               new Point(20, 20),
+                                               new Point(10, 0) },
                 Stroke = Brushes.Black,
                 StrokeThickness = 1,
             };
-            Shape el = myPolygon;
-            Shape = el;
-            Draw(canvas);
+            Shape shapeElement = myPolygon;
+            Shape = shapeElement;
+        }
+        
+        public Triangle()
+        {
+            Name = "Triangle";
+            X = rnd.Next(0, P_X_MAX);
+            Y = rnd.Next(0, P_Y_MAX);
+            DX = deltaCoordinate[rnd.Next(0, deltaCoordinate.Length)];
+            DY = deltaCoordinate[rnd.Next(0, deltaCoordinate.Length)];
+            CurrentColor = new SolidColorBrush(Color.FromRgb((byte) rnd.Next(0, 255),
+                            (byte) rnd.Next(0, 255), (byte) rnd.Next(0, 255)));
+            Draw();
         }
     }
 }

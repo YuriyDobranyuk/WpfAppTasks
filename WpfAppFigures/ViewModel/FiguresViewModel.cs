@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
+using System.Windows.Shapes;
+using System.Windows.Threading;
+using WpfAppFigures.Enums;
 using WpfAppFigures.Model;
 using WpfAppFigures.Services.Commands;
 
@@ -10,95 +12,61 @@ namespace WpfAppFigures.ViewModel
     internal class FiguresViewModel : BaseViewModel
     {
         #region Props
-        public List<Figure> figures = new List<Figure>();
-        public LinkedList<Figure> ListFigures = new LinkedList<Figure>();
-      
+        public ObservableCollection<Figure> Figures { get; set; }
+        public ObservableCollection<Shape> FiguresShape { get; set; }
+
+        public DispatcherTimer timer;
         #endregion
 
         #region Commands
-        #region ToolbarButtonClickCommand
-        public ICommand ToolbarButtonClickCommand { get; }
-        private bool CanToolbarButtonClickCommandExecute(object p) => true;
-        private void OnToolbarButtonClickCommandExecute(object p)
+        #region SelectFigureCommand
+        public ICommand SelectFigureCommand { get; }
+        private bool CanSelectFigureCommandExecute(object p) => true;
+        private void OnSelectFigureCommandExecute(object p)
         {
-            //var content = Application.Current.MainWindow.Content;
-            Canvas figuresCanvas = (Canvas)p;
-            Triangle elTriangle = new Triangle(figuresCanvas);
-            Figure elFigureTriangle = elTriangle;
-            figures.Add(elFigureTriangle);
-            ListFigures.AddLast(elFigureTriangle);
-
-            //string typeFigure = p.ToString();
-            /*switch (typeFigure)
+            Enum.TryParse(p.ToString(), out FigureType selectedFigure);
+            if (selectedFigure == FigureType.Circle)
             {
-                case "triangle":
-                    Triangle elTriangle = new Triangle(figuresCanvas);
-                    Figure elFigureTriangle = elTriangle;
-                    figures.Add(elFigureTriangle);
-                    ListFigures.AddLast(elFigureTriangle);
-                    break;
-                case "rectangle":
-                    RectangleFigure elRectangleFigure = new RectangleFigure(figuresCanvas);
-                    Figure elFigureRectangleFigure = elRectangleFigure;
-                    figures.Add(elFigureRectangleFigure);
-                    ListFigures.AddLast(elFigureRectangleFigure);
-                    break;
-                case "circle":
-                    Circle elCircle = new Circle(figuresCanvas);
-                    Figure elFigureCircle = elCircle;
-                    figures.Add(elFigureCircle);
-                    ListFigures.AddLast(elFigureCircle);
-                    break;
-            }*/
-        }
-        #endregion
-        #region OnWindowLoaded
-        public ICommand OnWindowLoaded { get; }
-        private bool CanOnWindowLoadedExecute(object p) => true;
-        private void OnOnWindowLoadedExecute(object p)
-        {
-            //var content = Application.Current.MainWindow.Content;
-            Canvas figuresCanvas = (Canvas)p;
-            Triangle elTriangle = new Triangle(figuresCanvas);
-            Figure elFigureTriangle = elTriangle;
-            figures.Add(elFigureTriangle);
-            ListFigures.AddLast(elFigureTriangle);
-
-            //string typeFigure = p.ToString();
-            /*switch (typeFigure)
+                var figure = new Circle();
+                var item = figure.Shape;
+                figure.Move(timer);
+                FiguresShape.Add(item);
+                Figures.Add(figure);
+            }
+            else if (selectedFigure == FigureType.Rectangle)
             {
-                case "triangle":
-                    Triangle elTriangle = new Triangle(figuresCanvas);
-                    Figure elFigureTriangle = elTriangle;
-                    figures.Add(elFigureTriangle);
-                    ListFigures.AddLast(elFigureTriangle);
-                    break;
-                case "rectangle":
-                    RectangleFigure elRectangleFigure = new RectangleFigure(figuresCanvas);
-                    Figure elFigureRectangleFigure = elRectangleFigure;
-                    figures.Add(elFigureRectangleFigure);
-                    ListFigures.AddLast(elFigureRectangleFigure);
-                    break;
-                case "circle":
-                    Circle elCircle = new Circle(figuresCanvas);
-                    Figure elFigureCircle = elCircle;
-                    figures.Add(elFigureCircle);
-                    ListFigures.AddLast(elFigureCircle);
-                    break;
-            }*/
+                var figure = new RectangleFigure();
+                var item = figure.Shape;
+                figure.Move(timer);
+                FiguresShape.Add(item);
+                Figures.Add(figure);
+            }
+            else if (selectedFigure == FigureType.Triangle)
+            {
+                var figure = new Triangle();
+                var item = figure.Shape;
+                figure.Move(timer);
+                FiguresShape.Add(item);
+                Figures.Add(figure);
+            }
         }
         #endregion
         #endregion
 
         public FiguresViewModel()
         {
-            //List<Figure> figures = new List<Figure>();
-            LinkedList<Figure> ListFigures = new LinkedList<Figure>();
+            Figures = new ObservableCollection<Figure>();
+            FiguresShape = new ObservableCollection<Shape>();
+
+            timer = new DispatcherTimer
+            {
+                Interval = new TimeSpan(0, 0, 0, 0, 10)
+            };
+            timer.Start();
+
             #region Comands
-            ToolbarButtonClickCommand = new LambdaCommand(OnToolbarButtonClickCommandExecute, 
-                                        CanToolbarButtonClickCommandExecute);
-            OnWindowLoaded = new LambdaCommand(OnToolbarButtonClickCommandExecute, 
-                                        CanToolbarButtonClickCommandExecute);
+            SelectFigureCommand = new LambdaCommand(OnSelectFigureCommandExecute,
+                             CanSelectFigureCommandExecute);
             #endregion
         }
     }

@@ -4,57 +4,61 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WpfAppFigures.View.Pages"
-      xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
       xmlns:viewmodel="clr-namespace:WpfAppFigures.ViewModel" 
       d:DataContext="{d:DesignInstance Type=viewmodel:FiguresViewModel}"
+      xmlns:enums="clr-namespace:WpfAppFigures.Enums"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="FiguresPage">
-    
-    
+
     <Grid>
         <ToolBar Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Width="170">
-            <Button Command="{Binding ToolbarButtonClickCommand}" CommandParameter="{Binding ElementName=figuresCanvas}" Width="30" Height="30" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10 0 0 0">
-                <Polygon Points="2,18 20,18 11,0" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button Command="{Binding SelectFigureCommand}" 
+                    CommandParameter="{x:Static enums:FigureType.Triangle}"
+                    Width="30" 
+                    Height="30" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Right"
+                    Margin="10 0 0 0">
+                <Polygon Points="2,18 20,18 11,0" 
+                         Stroke="Black" 
+                         StrokeThickness="2" 
+                         HorizontalAlignment="Center" 
+                         VerticalAlignment="Center"/>
             </Button>
             <Separator Margin="10 0" />
-            <Button Command="{Binding ToolbarButtonClickCommand}" CommandParameter="rectangle" Width="30" Height="30">
+            <Button Command="{Binding SelectFigureCommand}" 
+                    CommandParameter="{x:Static enums:FigureType.Rectangle}"
+                    Width="30" 
+                    Height="30">
                 <Rectangle Width="20" Height="20" Fill="Transparent" Stroke="Black" StrokeThickness="2"
                             HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Button>
             <Separator Margin="10 0"/>
-            <Button Command="{Binding ToolbarButtonClickCommand}" CommandParameter="circle" Width="30" Height="30">
+            <Button Command="{Binding SelectFigureCommand}" 
+                    CommandParameter="{x:Static enums:FigureType.Circle}" 
+                    Width="30" 
+                    Height="30">
                 <Ellipse Width="20" Height="20" Fill="Transparent" Stroke="Black" StrokeThickness="2" 
                          HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Button>
         </ToolBar>
         <WrapPanel Orientation="Horizontal" Width="800" Margin="0 40 0 0">
-            <TreeView Width="100" Height="410" BorderThickness="1" BorderBrush="Black" ItemsSource="{Binding figures}">
+            <TreeView Width="130" Height="410" BorderThickness="1" BorderBrush="Black"
+                      ItemsSource="{Binding Figures}" HorizontalContentAlignment="Left" HorizontalAlignment="Left">
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate>
-                        <TreeViewItem Header="{Binding Name}">
-                        </TreeViewItem>
+                        <TreeViewItem Header="{Binding Name}" Foreground="{Binding CurrentColor}" />
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
-                <!--TreeViewItem Header="{Binding Name}"/>
-                <TreeViewItem Header="Circle"/>
-                <TreeViewItem Header="Rectangle"/>
-                <TreeViewItem Header="Triangle"/>
-                <TreeViewItem Header="Circle"/>
-                <TreeViewItem Header="Rectangle"/-->
             </TreeView>
-            <Canvas Height="410" Width="700" Background="WhiteSmoke" x:Name="figuresCanvas" >
-                <Polygon Points="0,20 20,20 10,0" Stroke="Black" Fill="red" StrokeThickness="1"/>
-                <Ellipse Width="20" Height="20" Fill="GreenYellow" Stroke="Black" StrokeThickness="1"
-                         Canvas.Left="5" Canvas.Top="20"/>
-                <Rectangle Width="20" Height="20" Fill="LightYellow" Stroke="Black" StrokeThickness="1"
-                            Canvas.Left="40" Canvas.Top="20"/>
-            </Canvas>
+            <ItemsControl ItemsSource="{Binding FiguresShape}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas Height="410" Width="670" Background="WhiteSmoke"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
         </WrapPanel>
-        <!--i:Interaction.Triggers>
-            <i:EventTrigger EventName="Loaded">
-                <i:InvokeCommandAction Command="{Binding OnWindowLoaded}" CommandParameter="{Binding ElementName=figuresCanvas}"/>
-            </i:EventTrigger>
-        </i:Interaction.Triggers-->
     </Grid>
 </Page>
