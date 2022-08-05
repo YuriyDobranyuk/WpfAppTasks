@@ -20,29 +20,7 @@ namespace WpfAppFigures.Model
         public override int DY { get => dy; set => dy = value; }
         public override string NameButton { get => nameButton; set => nameButton = value; }
         public override DispatcherTimer Timer { get; set; }
-        public override void Move(DispatcherTimer timer)
-        {
-            double x_val = X;
-            double y_val = Y;
-            double dx = DX;
-            double dy = DY;
-            timer.Tick += (sender, e) =>
-            {
-                if (x_val < 0 || x_val > P_X_MAX)
-                {
-                    dx = -dx;
-                }
-                if (y_val < 0 || y_val > P_Y_MAX)
-                {
-                    dy = -dy;
-                }
-                x_val += dx;
-                y_val += dy;
-                Canvas.SetLeft(Shape, x_val);
-                Canvas.SetTop(Shape, y_val);
-            };
-        }
-        public void MoveNew()
+        public override void Move()
         {
             double x_val = X;
             double y_val = Y;
@@ -88,48 +66,6 @@ namespace WpfAppFigures.Model
             Canvas.SetLeft(Shape, x_val);
             Canvas.SetTop(Shape, y_val);
         }
-        public override void StopMoveShape(Figure p)
-        {
-            Figure currentFigure = p;
-            var currentTimer = currentFigure.Timer;
-            if (currentTimer.IsEnabled)
-            {
-                currentTimer.IsEnabled = false;
-                currentFigure.NameButton = "Move";
-            }
-            else
-            {
-                currentTimer.IsEnabled = true;
-                currentFigure.NameButton = "Stop";
-            }
-
-        }
-        #region StopMoveShapeCommand
-        public ICommand ClickStopMoveShapeCommand { get; }
-        private bool CanClickStopMoveShapeCommandExecute(object p) => true;
-        private void OnClickStopMoveShapeCommandExecute(object p)
-        {
-            //Figure currentFigure = (Figure)p;
-            //var currentTimer = currentFigure.Timer;
-            DispatcherTimer currentTimer = (DispatcherTimer)p;
-            if (currentTimer.IsEnabled)
-            {
-                currentTimer.IsEnabled = false;
-                NameButton = "Move";
-            }
-            else
-            {
-                currentTimer.IsEnabled = true;
-                NameButton = "Stop";
-            }
-            OnPropertyChanged("NameButton");
-        }
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string PropertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
-        }
-        #endregion
         public CircleFigure()
         {
             Name = "Circle";
@@ -140,9 +76,6 @@ namespace WpfAppFigures.Model
             CurrentColor = new SolidColorBrush(Color.FromRgb((byte)rnd.Next(0, 255),
                             (byte)rnd.Next(0, 255), (byte)rnd.Next(0, 255)));
             Draw();
-
-            ClickStopMoveShapeCommand = new LambdaCommand(OnClickStopMoveShapeCommandExecute,
-                             CanClickStopMoveShapeCommandExecute);
         }
     }
 }

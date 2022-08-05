@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -18,12 +19,17 @@ namespace WpfAppFigures.Model
         public override string NameButton { get => nameButton; set => nameButton = value; }
         public override DispatcherTimer Timer { get; set; }
         
-        public override void Move(DispatcherTimer timer)
+        public override void Move()
         {
             double x_val = X;
             double y_val = Y;
             double dx = DX;
             double dy = DY;
+
+            var timer = new DispatcherTimer
+            {
+                Interval = new TimeSpan(0, 0, 0, 0, 10)
+            };
             timer.Tick += (sender, e) =>
             {
                 if (x_val < 0 || x_val > P_X_MAX)
@@ -39,6 +45,8 @@ namespace WpfAppFigures.Model
                 Canvas.SetLeft(Shape, x_val);
                 Canvas.SetTop(Shape, y_val);
             };
+            timer.Start();
+            Timer = timer;
         }
         public override void Draw()
         {
@@ -53,10 +61,10 @@ namespace WpfAppFigures.Model
             };
             Shape shapeElement = myPolygon;
             Shape = shapeElement;
-        }
-        public override void StopMoveShape(Figure p)
-        {
-            throw new System.NotImplementedException();
+            double x_val = X;
+            double y_val = Y;
+            Canvas.SetLeft(Shape, x_val);
+            Canvas.SetTop(Shape, y_val);
         }
         public TriangleFigure()
         {

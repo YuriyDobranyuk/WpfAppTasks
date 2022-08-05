@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Windows.Input;
 using System.Windows.Shapes;
-using System.Windows.Threading;
 using WpfAppFigures.Enums;
 using WpfAppFigures.Model;
 using WpfAppFigures.Services.Commands;
@@ -14,9 +14,6 @@ namespace WpfAppFigures.ViewModel
         #region Props
         public ObservableCollection<Figure> Figures { get; set; }
         public ObservableCollection<Shape> FiguresShape { get; set; }
-        public string NameButtonStop { get; set; }
-
-        public DispatcherTimer timer;
         #endregion
 
         #region Commands
@@ -30,8 +27,7 @@ namespace WpfAppFigures.ViewModel
             {
                 var figure = new CircleFigure();
                 var item = figure.Shape;
-                //figure.Move(timer);
-                figure.MoveNew();
+                figure.Move();
                 FiguresShape.Add(item);
                 Figures.Add(figure);
             }
@@ -39,7 +35,7 @@ namespace WpfAppFigures.ViewModel
             {
                 var figure = new RectangleFigure();
                 var item = figure.Shape;
-                figure.Move(timer);
+                figure.Move();
                 FiguresShape.Add(item);
                 Figures.Add(figure);
             }
@@ -47,7 +43,7 @@ namespace WpfAppFigures.ViewModel
             {
                 var figure = new TriangleFigure();
                 var item = figure.Shape;
-                figure.Move(timer);
+                figure.Move();
                 FiguresShape.Add(item);
                 Figures.Add(figure);
             }
@@ -58,17 +54,26 @@ namespace WpfAppFigures.ViewModel
         private bool CanClickStopMoveShapeCommandExecute(object p) => true;
         private void OnClickStopMoveShapeCommandExecute(object p)
         {
+            Figure currentFigure = (Figure)p;
+            var timer = currentFigure.Timer;
             if (timer.IsEnabled)
             {
                 timer.IsEnabled = false;
-                NameButtonStop = "MoveFigures";
+                currentFigure.Name = "terMove";
+                currentFigure.NameButton = "Move";
             }
             else
             {
                 timer.IsEnabled = true;
-                NameButtonStop = "StopFigures";
+                currentFigure.Name = "retStop";
+                currentFigure.NameButton = "Stop";
             }
-            OnPropertyChanged("NameButtonStop");
+            var t = Figures;
+            
+            //listView.Items.Refresh();
+            //Thread.Sleep(1000);
+            //OnPropertyChanged("NameButton");
+            //OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
         #endregion
         #endregion
@@ -77,14 +82,6 @@ namespace WpfAppFigures.ViewModel
         {
             Figures = new ObservableCollection<Figure>();
             FiguresShape = new ObservableCollection<Shape>();
-
-            timer = new DispatcherTimer
-            {
-                Interval = new TimeSpan(0, 0, 0, 0, 10)
-            };
-            timer.Start();
-
-            NameButtonStop = "Stop";
 
             #region Comands
             SelectFigureCommand = new LambdaCommand(OnSelectFigureCommandExecute,

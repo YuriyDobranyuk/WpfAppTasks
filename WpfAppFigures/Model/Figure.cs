@@ -2,7 +2,6 @@
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using WpfAppFigures.Enums;
 
 namespace WpfAppFigures.Model
 {
@@ -12,7 +11,6 @@ namespace WpfAppFigures.Model
         public const int P_X_MAX = 650;
         public const int P_Y_MAX = 390;
         protected int x, y, dx, dy;
-        protected bool isEnableTimer = true;
         protected string nameButton = "Stop";
         protected Brush currentColor;
         protected Random rnd = new Random();
@@ -25,8 +23,7 @@ namespace WpfAppFigures.Model
         public abstract int DY { get; set; }
         public abstract string NameButton { get; set; }
         public abstract DispatcherTimer Timer { get; set; }
-        public abstract void Move(DispatcherTimer timer);
+        public abstract void Move();
         public abstract void Draw();
-        public abstract void StopMoveShape(Figure p);
     }
 }
