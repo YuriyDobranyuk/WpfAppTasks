@@ -14,6 +14,9 @@ namespace WpfAppFigures.Model
         public override int Y { get => y; set => y = value; }
         public override int DX { get => dx; set => dx = value; }
         public override int DY { get => dy; set => dy = value; }
+        public override string NameButton { get => nameButton; set => nameButton = value; }
+        public override DispatcherTimer Timer { get; set; }
+        
         public override void Move(DispatcherTimer timer)
         {
             double x_val = X;
@@ -48,6 +51,10 @@ namespace WpfAppFigures.Model
             };
             Shape shapeElement = rectangleFigure;
             Shape = shapeElement;
+        }
+        public override void StopMoveShape(Figure p)
+        {
+            throw new System.NotImplementedException();
         }
         public RectangleFigure()
         {

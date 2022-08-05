@@ -14,6 +14,7 @@ namespace WpfAppFigures.ViewModel
         #region Props
         public ObservableCollection<Figure> Figures { get; set; }
         public ObservableCollection<Shape> FiguresShape { get; set; }
+        public string NameButtonStop { get; set; }
 
         public DispatcherTimer timer;
         #endregion
@@ -27,9 +28,10 @@ namespace WpfAppFigures.ViewModel
             Enum.TryParse(p.ToString(), out FigureType selectedFigure);
             if (selectedFigure == FigureType.Circle)
             {
-                var figure = new Circle();
+                var figure = new CircleFigure();
                 var item = figure.Shape;
-                figure.Move(timer);
+                //figure.Move(timer);
+                figure.MoveNew();
                 FiguresShape.Add(item);
                 Figures.Add(figure);
             }
@@ -43,12 +45,30 @@ namespace WpfAppFigures.ViewModel
             }
             else if (selectedFigure == FigureType.Triangle)
             {
-                var figure = new Triangle();
+                var figure = new TriangleFigure();
                 var item = figure.Shape;
                 figure.Move(timer);
                 FiguresShape.Add(item);
                 Figures.Add(figure);
             }
+        }
+        #endregion
+        #region StopMoveShapeCommand
+        public ICommand ClickStopMoveShapeCommand { get; }
+        private bool CanClickStopMoveShapeCommandExecute(object p) => true;
+        private void OnClickStopMoveShapeCommandExecute(object p)
+        {
+            if (timer.IsEnabled)
+            {
+                timer.IsEnabled = false;
+                NameButtonStop = "MoveFigures";
+            }
+            else
+            {
+                timer.IsEnabled = true;
+                NameButtonStop = "StopFigures";
+            }
+            OnPropertyChanged("NameButtonStop");
         }
         #endregion
         #endregion
@@ -64,9 +84,13 @@ namespace WpfAppFigures.ViewModel
             };
             timer.Start();
 
+            NameButtonStop = "Stop";
+
             #region Comands
             SelectFigureCommand = new LambdaCommand(OnSelectFigureCommandExecute,
                              CanSelectFigureCommandExecute);
+            ClickStopMoveShapeCommand = new LambdaCommand(OnClickStopMoveShapeCommandExecute,
+                             CanClickStopMoveShapeCommandExecute);
             #endregion
         }
     }

@@ -55,11 +55,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Enums\TimerButtonType.cs" />
     <Compile Include="Enums\FigureType.cs" />
-    <Compile Include="Model\Circle.cs" />
+    <Compile Include="Model\CircleFigure.cs" />
     <Compile Include="Model\Figure.cs" />
     <Compile Include="Model\RectangleFigure.cs" />
-    <Compile Include="Model\Triangle.cs" />
+    <Compile Include="Model\TriangleFigure.cs" />
     <Compile Include="Services\Commands\Base\Command.cs" />
     <Compile Include="Services\Commands\LambdaCommand.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />

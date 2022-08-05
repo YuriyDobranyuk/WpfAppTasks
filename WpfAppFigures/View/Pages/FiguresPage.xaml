@@ -10,9 +10,39 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="FiguresPage">
+    
+    <Page.Resources>
+        <Style TargetType="Button" x:Key="treeViewButtonStyle">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{Binding CurrentColor}"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                CornerRadius="5"
+                                Margin="0 3"
+                                Padding="10 5">
+                            <ContentPresenter Content="{Binding NameButton}"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="ButtonBorder" Value="WhiteSmoke"/>
+                                <Setter Property="Foreground" Value="{Binding CurrentColor}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+    </Page.Resources>
 
     <Grid>
-        <ToolBar Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Width="170">
+        <ToolBar Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Width="470">
             <Button Command="{Binding SelectFigureCommand}" 
                     CommandParameter="{x:Static enums:FigureType.Triangle}"
                     Width="30" 
@@ -42,13 +72,33 @@
                 <Ellipse Width="20" Height="20" Fill="Transparent" Stroke="Black" StrokeThickness="2" 
                          HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Button>
+            <Separator Margin="10 0"/>
+            <Button Content="{Binding NameButtonStop}"
+                    Padding="15 5"
+                    Background="MediumVioletRed"
+                    Foreground="WhiteSmoke"
+                    Command="{Binding ClickStopMoveShapeCommand}"
+                    CommandParameter="{Binding Shape}"/>
         </ToolBar>
         <WrapPanel Orientation="Horizontal" Width="800" Margin="0 40 0 0">
             <TreeView Width="130" Height="410" BorderThickness="1" BorderBrush="Black"
                       ItemsSource="{Binding Figures}" HorizontalContentAlignment="Left" HorizontalAlignment="Left">
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate>
-                        <TreeViewItem Header="{Binding Name}" Foreground="{Binding CurrentColor}" />
+                        <TreeViewItem Header="{Binding Name}"
+                                      Foreground="{Binding CurrentColor}">
+                            <Button Style="{StaticResource treeViewButtonStyle}" 
+                                    Command="{Binding ClickStopMoveShapeCommand}"
+                                    CommandParameter="{Binding Timer}"/>
+                            <Button Content="{Binding NameButton}" 
+                                    Command="{Binding ClickStopMoveShapeCommand}"
+                                    CommandParameter="{Binding Timer}"/>
+                            <!--Button Style="{StaticResource treeViewButtonStyle}" 
+                                    Command="{Binding 
+                                    Source={viewmodel:FiguresViewModel}, 
+                                    Path=ClickStopMoveShapeCommand}"
+                                    CommandParameter="{Binding Shape}"/-->
+                        </TreeViewItem>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
