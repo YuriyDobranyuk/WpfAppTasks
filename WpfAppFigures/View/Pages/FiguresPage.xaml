@@ -107,7 +107,7 @@
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
-            <ListBox ItemsSource="{Binding Figures, Mode=TwoWay}" >
+            <!--ListBox ItemsSource="{Binding Figures, Mode=TwoWay}" >
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Margin="5">
@@ -123,7 +123,7 @@
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
-            </ListBox>
+            </ListBox-->
             <ItemsControl ItemsSource="{Binding FiguresShape}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
