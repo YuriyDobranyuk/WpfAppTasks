@@ -1,20 +1,29 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Threading;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Windows.Shapes;
-using WpfAppFigures.Enums;
 using WpfAppFigures.Model;
 using WpfAppFigures.Services.Commands;
 
-namespace WpfAppFigures.ViewModel 
+namespace WpfAppFigures.ViewModel
 {
-    internal class FiguresViewModel : BaseViewModel
+    public class FiguresViewModel : BaseViewModel
     {
-        #region Props
         public ObservableCollection<Figure> Figures { get; set; }
         public ObservableCollection<Shape> FiguresShape { get; set; }
-        #endregion
+
+        public CircleFigure Circle { get; set; } = new CircleFigure();
+        public RectangleFigure Rectangle { get; set; } = new RectangleFigure();
+        public TriangleFigure Triangle { get; set; } = new TriangleFigure();
+
+
+        public FiguresViewModel()
+        {
+            Figures = new ObservableCollection<Figure>();
+            FiguresShape = new ObservableCollection<Shape>();
+
+            SelectFigureCommand = new LambdaCommand(OnSelectFigureCommandExecute, CanSelectFigureCommandExecute);
+            ClickStopMoveShapeCommand = new LambdaCommand(OnClickStopMoveShapeCommandExecute, CanClickStopMoveShapeCommandExecute);
+        }
 
         #region Commands
         #region SelectFigureCommand
@@ -22,31 +31,13 @@ namespace WpfAppFigures.ViewModel
         private bool CanSelectFigureCommandExecute(object p) => true;
         private void OnSelectFigureCommandExecute(object p)
         {
-            Enum.TryParse(p.ToString(), out FigureType selectedFigure);
-            if (selectedFigure == FigureType.Circle)
-            {
-                var figure = new CircleFigure();
-                var item = figure.Shape;
-                figure.Move();
-                FiguresShape.Add(item);
-                Figures.Add(figure);
-            }
-            else if (selectedFigure == FigureType.Rectangle)
-            {
-                var figure = new RectangleFigure();
-                var item = figure.Shape;
-                figure.Move();
-                FiguresShape.Add(item);
-                Figures.Add(figure);
-            }
-            else if (selectedFigure == FigureType.Triangle)
-            {
-                var figure = new TriangleFigure();
-                var item = figure.Shape;
-                figure.Move();
-                FiguresShape.Add(item);
-                Figures.Add(figure);
-            }
+            var figure = p as Figure;
+
+            figure.Move();
+            Figures.Add(figure);
+            FiguresShape.Add(figure.Shape);
+
+            ResetParameters();
         }
         #endregion
         #region StopMoveShapeCommand
@@ -54,41 +45,23 @@ namespace WpfAppFigures.ViewModel
         private bool CanClickStopMoveShapeCommandExecute(object p) => true;
         private void OnClickStopMoveShapeCommandExecute(object p)
         {
-            Figure currentFigure = (Figure)p;
-            var timer = currentFigure.Timer;
-            if (timer.IsEnabled)
-            {
-                timer.IsEnabled = false;
-                currentFigure.Name = "terMove";
-                currentFigure.NameButton = "Move";
-            }
-            else
-            {
-                timer.IsEnabled = true;
-                currentFigure.Name = "retStop";
-                currentFigure.NameButton = "Stop";
-            }
-            var t = Figures;
-            
-            //listView.Items.Refresh();
-            //Thread.Sleep(1000);
-            //OnPropertyChanged("NameButton");
-            //OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            var currentFigure = p as Figure;
+
+            currentFigure.Timer.IsEnabled = currentFigure.Timer.IsEnabled ? false : true;
+            currentFigure.IsMove = currentFigure.Timer.IsEnabled;
         }
         #endregion
         #endregion
 
-        public FiguresViewModel()
+        private void ResetParameters()
         {
-            Figures = new ObservableCollection<Figure>();
-            FiguresShape = new ObservableCollection<Shape>();
+            Circle = new CircleFigure();
+            Rectangle = new RectangleFigure();
+            Triangle = new TriangleFigure();
 
-            #region Comands
-            SelectFigureCommand = new LambdaCommand(OnSelectFigureCommandExecute,
-                             CanSelectFigureCommandExecute);
-            ClickStopMoveShapeCommand = new LambdaCommand(OnClickStopMoveShapeCommandExecute,
-                             CanClickStopMoveShapeCommandExecute);
-            #endregion
+            OnPropertyChanged(nameof(Circle));
+            OnPropertyChanged(nameof(Rectangle));
+            OnPropertyChanged(nameof(Triangle));
         }
     }
 }

@@ -2,37 +2,45 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:WpfAppFigures.View.Pages"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:viewmodel="clr-namespace:WpfAppFigures.ViewModel" 
       d:DataContext="{d:DesignInstance Type=viewmodel:FiguresViewModel}"
-      xmlns:enums="clr-namespace:WpfAppFigures.Enums"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="FiguresPage">
-    
+
     <Page.Resources>
         <Style TargetType="Button" x:Key="treeViewButtonStyle">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="ButtonBorder"
-                                Background="{Binding CurrentColor}"
+                                Background="{Binding Color}"
                                 BorderBrush="Gray"
                                 BorderThickness="1"
                                 CornerRadius="5"
                                 Margin="0 3"
                                 Padding="10 5">
-                            <ContentPresenter Content="{Binding NameButton}"
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
+                        
                         <ControlTemplate.Triggers>
+                            <DataTrigger  Binding="{Binding IsMove, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="true">
+                                <DataTrigger.Setters>
+                                    <Setter Property="ContentPresenter.Content" Value="Stop"></Setter>
+                                </DataTrigger.Setters>
+                            </DataTrigger>
+                            <DataTrigger  Binding="{Binding IsMove, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="false">
+                                <DataTrigger.Setters>
+                                    <Setter Property="ContentPresenter.Content" Value="Move"></Setter>
+                                </DataTrigger.Setters>
+                            </DataTrigger>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" TargetName="ButtonBorder" Value="WhiteSmoke"/>
-                                <Setter Property="Foreground" Value="{Binding CurrentColor}"/>
+                                <Setter Property="Foreground" Value="{Binding Color}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
+                        
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -44,7 +52,7 @@
     <Grid>
         <ToolBar Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Width="170">
             <Button Command="{Binding SelectFigureCommand}" 
-                    CommandParameter="{x:Static enums:FigureType.Triangle}"
+                    CommandParameter="{Binding Triangle}"
                     Width="30" 
                     Height="30" 
                     VerticalAlignment="Center" 
@@ -56,23 +64,35 @@
                          HorizontalAlignment="Center" 
                          VerticalAlignment="Center"/>
             </Button>
+            
             <Separator Margin="10 0" />
             <Button Command="{Binding SelectFigureCommand}" 
-                    CommandParameter="{x:Static enums:FigureType.Rectangle}"
+                    CommandParameter="{Binding Rectangle}"
                     Width="30" 
                     Height="30">
-                <Rectangle Width="20" Height="20" Fill="Transparent" Stroke="Black" StrokeThickness="2"
-                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Rectangle Width="20" 
+                           Height="20" 
+                           Fill="Transparent" 
+                           Stroke="Black" StrokeThickness="2"
+                           HorizontalAlignment="Center" 
+                           VerticalAlignment="Center"/>
             </Button>
+            
             <Separator Margin="10 0"/>
             <Button Command="{Binding SelectFigureCommand}" 
-                    CommandParameter="{x:Static enums:FigureType.Circle}" 
+                    CommandParameter="{Binding Circle}" 
                     Width="30" 
                     Height="30">
-                <Ellipse Width="20" Height="20" Fill="Transparent" Stroke="Black" StrokeThickness="2" 
-                         HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Ellipse Width="20" 
+                         Height="20" 
+                         Fill="Transparent" 
+                         Stroke="Black" 
+                         StrokeThickness="2" 
+                         HorizontalAlignment="Center" 
+                         VerticalAlignment="Center"/>
             </Button>
         </ToolBar>
+        
         <WrapPanel Orientation="Horizontal" Width="800" Margin="0 40 0 0">
             <TreeView BorderThickness="1"
                       BorderBrush="Black"
@@ -81,49 +101,20 @@
                       HorizontalContentAlignment="Left"
                       HorizontalAlignment="Left"
                       Width="130">
+
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate>
                         <TreeViewItem Header="{Binding Name, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
-                                      Foreground="{Binding CurrentColor}">
+                                      Foreground="{Binding Color}">
                             <Button Style="{DynamicResource treeViewButtonStyle}" 
-                                    Command="{Binding DataContext.ClickStopMoveShapeCommand, 
-                                                RelativeSource={RelativeSource AncestorType=Page}}"
+                                    Command="{Binding DataContext.ClickStopMoveShapeCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                                     CommandParameter="{Binding}"/>
-                            <Button Content="{Binding NameButton}"
-                                    Command="{Binding DataContext.ClickStopMoveShapeCommand, 
-                                                RelativeSource={RelativeSource AncestorType=Page}}"
-                                    CommandParameter="{Binding}"/>
-
-                            <!--Button Content="{Binding NameButton}" 
-                                    Command="{Binding ClickStopMoveShapeCommand}"
-                                    CommandParameter="{Binding Timer}"/>
-                                                        
-                            <Button Content="Save"
-                        Command="{Binding DataContext.ClickStopMoveShapeCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                        CommandParameter="{Binding}">
-                            </Button-->
-
                         </TreeViewItem>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
+                
             </TreeView>
-            <!--ListBox ItemsSource="{Binding Figures, Mode=TwoWay}" >
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Margin="5">
-                            <TextBlock FontSize="16" Text="{Binding Path=Name}" HorizontalAlignment="Center" />
-                            <Button Style="{StaticResource treeViewButtonStyle}" 
-                                    Command="{Binding DataContext.ClickStopMoveShapeCommand, 
-                                                RelativeSource={RelativeSource AncestorType=Page}}"
-                                    CommandParameter="{Binding}"/>
-                            <Button Content="{Binding Path=NameButton, Mode=TwoWay}"
-                                    Command="{Binding DataContext.ClickStopMoveShapeCommand, 
-                                                RelativeSource={RelativeSource AncestorType=Page}}"
-                                    CommandParameter="{Binding}"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox-->
+
             <ItemsControl ItemsSource="{Binding FiguresShape}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -131,6 +122,8 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
+            
         </WrapPanel>
+        
     </Grid>
 </Page>
