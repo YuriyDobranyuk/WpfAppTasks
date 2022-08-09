@@ -1,4 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using WpfAppFigures.Model;
@@ -15,7 +18,6 @@ namespace WpfAppFigures.ViewModel
         public RectangleFigure Rectangle { get; set; } = new RectangleFigure();
         public TriangleFigure Triangle { get; set; } = new TriangleFigure();
 
-
         public FiguresViewModel()
         {
             Figures = new ObservableCollection<Figure>();
@@ -23,6 +25,7 @@ namespace WpfAppFigures.ViewModel
 
             SelectFigureCommand = new LambdaCommand(OnSelectFigureCommandExecute, CanSelectFigureCommandExecute);
             ClickStopMoveShapeCommand = new LambdaCommand(OnClickStopMoveShapeCommandExecute, CanClickStopMoveShapeCommandExecute);
+            ChangeCurrentCultureCommand = new LambdaCommand(OnChangeCurrentCultureCommandExecute, CanChangeCurrentCultureCommandExecute);
         }
 
         #region Commands
@@ -51,6 +54,37 @@ namespace WpfAppFigures.ViewModel
             currentFigure.IsMove = currentFigure.Timer.IsEnabled;
         }
         #endregion
+        #region ChangeCurrentCultureCommand
+        public ICommand ChangeCurrentCultureCommand { get; }
+        private bool CanChangeCurrentCultureCommandExecute(object p) => true;
+        private void OnChangeCurrentCultureCommandExecute(object p)
+        {
+            var currentCulture = p.ToString();
+            //Thread.CurrentThread.CurrentUICulture = new CultureInfo(currentCulture);
+            //Thread.CurrentThread.CurrentCulture = new CultureInfo(currentCulture);
+
+            /**/
+            ResourceDictionary dict = new ResourceDictionary();
+
+            dict.Source = new Uri(String.Format("Resources/Dictionary.{0}.xaml", currentCulture), UriKind.Relative);
+
+            ResourceDictionary oldDict = (from d in Application.Current.Resources.MergedDictionaries
+                                          where d.Source != null && d.Source.OriginalString.StartsWith("Resources/Dictionary.")
+                                          select d).FirstOrDefault();
+            if (oldDict != null)
+            {
+                int ind = Application.Current.Resources.MergedDictionaries.IndexOf(oldDict);
+                Application.Current.Resources.MergedDictionaries.Remove(oldDict);
+                Application.Current.Resources.MergedDictionaries.Insert(ind, dict);
+            }
+            else
+            {
+                Application.Current.Resources.MergedDictionaries.Add(dict);
+            }
+            /**/
+
+        }
+        #endregion
         #endregion
 
         private void ResetParameters()
@@ -63,6 +97,7 @@ namespace WpfAppFigures.ViewModel
             OnPropertyChanged(nameof(Rectangle));
             OnPropertyChanged(nameof(Triangle));
         }
+        
     }
 }
 

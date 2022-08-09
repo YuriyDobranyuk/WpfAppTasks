@@ -14,7 +14,7 @@ namespace WpfAppFigures.Model
 
         public TriangleFigure()
         {
-            Name = FigureType.Triangle.ToString(); ;
+            Name = FigureType.Triangle.ToString();
 
             X = Random.Next(0, Constants.P_X_MAX);
             Y = Random.Next(0, Constants.P_Y_MAX);

@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:v="clr-namespace:System;assembly=mscorlib">
+    <v:String x:Key="NameApp">Приложение фигуры ru_xml</v:String>
+    <v:String x:Key="MenuLang">Язык_xml</v:String>
+    <v:String x:Key="MenuItemEn">Англ._xml</v:String>
+    <v:String x:Key="MenuItemRu">Рус._xml</v:String>
+    <v:String x:Key="NameButtonStop">Стоп_xml</v:String>
+    <v:String x:Key="NameButtonMove">Двигать_xml</v:String>
+    <v:String x:Key="NameFigureCircle">Круг_xml</v:String>
+    <v:String x:Key="NameFigureRectangle">Прямоугольник_xml</v:String>
+    <v:String x:Key="NameFigureTriangle">Треугольник_xml</v:String>
+</ResourceDictionary>
