@@ -63,14 +63,11 @@ namespace WpfAppFigures.ViewModel
             //Thread.CurrentThread.CurrentUICulture = new CultureInfo(currentCulture);
             //Thread.CurrentThread.CurrentCulture = new CultureInfo(currentCulture);
 
-            /**/
             ResourceDictionary dict = new ResourceDictionary();
 
-            dict.Source = new Uri(String.Format("Resources/Dictionary.{0}.xaml", currentCulture), UriKind.Relative);
+            dict.Source = new Uri(String.Format(@"Resources\Dictionary.{0}.xaml", currentCulture), UriKind.Relative);
+            var oldDict = Application.Current.Resources.MergedDictionaries.Where(x => x.Source != null && x.Source.OriginalString.StartsWith(@"Resources\Dictionary.")).FirstOrDefault();
 
-            ResourceDictionary oldDict = (from d in Application.Current.Resources.MergedDictionaries
-                                          where d.Source != null && d.Source.OriginalString.StartsWith("Resources/Dictionary.")
-                                          select d).FirstOrDefault();
             if (oldDict != null)
             {
                 int ind = Application.Current.Resources.MergedDictionaries.IndexOf(oldDict);
@@ -81,7 +78,6 @@ namespace WpfAppFigures.ViewModel
             {
                 Application.Current.Resources.MergedDictionaries.Add(dict);
             }
-            /**/
 
         }
         #endregion
