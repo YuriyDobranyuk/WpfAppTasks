@@ -6,8 +6,7 @@
       xmlns:viewmodel="clr-namespace:WpfAppFigures.ViewModel" 
       d:DataContext="{d:DesignInstance Type=viewmodel:FiguresViewModel}"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="FiguresPage">
+      d:DesignHeight="450" d:DesignWidth="800">
 
     <Page.Resources>
         <Style TargetType="Button" x:Key="treeViewButtonStyle">
@@ -23,16 +22,16 @@
                                 Padding="10 5">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
-                        
+
                         <ControlTemplate.Triggers>
                             <DataTrigger  Binding="{Binding IsMove, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="true">
                                 <DataTrigger.Setters>
-                                    <Setter Property="ContentPresenter.Content" Value="Stop"></Setter>
+                                    <Setter Property="ContentPresenter.Content" Value="{DynamicResource NameButtonStop}"></Setter>
                                 </DataTrigger.Setters>
                             </DataTrigger>
                             <DataTrigger  Binding="{Binding IsMove, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="false">
                                 <DataTrigger.Setters>
-                                    <Setter Property="ContentPresenter.Content" Value="Move"></Setter>
+                                    <Setter Property="ContentPresenter.Content" Value="{DynamicResource NameButtonMove}"></Setter>
                                 </DataTrigger.Setters>
                             </DataTrigger>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -50,6 +49,16 @@
     </Page.Resources>
 
     <Grid>
+        <Menu Height="20" Width="40" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <MenuItem Header="{DynamicResource MenuLang}">
+                <MenuItem Header="{DynamicResource MenuItemEn}" 
+                          Command="{Binding ChangeCurrentCultureCommand}" 
+                          CommandParameter="en-US"/>
+                <MenuItem Header="{DynamicResource MenuItemRu}"
+                          Command="{Binding ChangeCurrentCultureCommand}" 
+                          CommandParameter="ru-RU" />
+            </MenuItem>
+        </Menu>
         <ToolBar Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Width="170">
             <Button Command="{Binding SelectFigureCommand}" 
                     CommandParameter="{Binding Triangle}"
@@ -104,12 +113,29 @@
 
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate>
-                        <TreeViewItem Header="{Binding Name, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
+                        <TreeViewItem x:Name="TreeViewItemEl"
                                       Foreground="{Binding Color}">
                             <Button Style="{DynamicResource treeViewButtonStyle}" 
                                     Command="{Binding DataContext.ClickStopMoveShapeCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                                     CommandParameter="{Binding}"/>
                         </TreeViewItem>
+                        <HierarchicalDataTemplate.Triggers>
+                            <DataTrigger  Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Circle">
+                                <DataTrigger.Setters>
+                                    <Setter TargetName="TreeViewItemEl" Property="Header" Value="{DynamicResource NameFigureCircle}"></Setter>
+                                </DataTrigger.Setters>
+                            </DataTrigger>
+                            <DataTrigger  Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Triangle">
+                                <DataTrigger.Setters>
+                                    <Setter TargetName="TreeViewItemEl" Property="Header" Value="{DynamicResource NameFigureTriangle}"></Setter>
+                                </DataTrigger.Setters>
+                            </DataTrigger>
+                            <DataTrigger  Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Rectangle">
+                                <DataTrigger.Setters>
+                                    <Setter TargetName="TreeViewItemEl" Property="Header" Value="{DynamicResource NameFigureRectangle}"></Setter>
+                                </DataTrigger.Setters>
+                            </DataTrigger>
+                        </HierarchicalDataTemplate.Triggers>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
                 

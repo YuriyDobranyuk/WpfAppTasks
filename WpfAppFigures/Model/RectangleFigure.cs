@@ -13,8 +13,8 @@ namespace WpfAppFigures.Model
 
         public RectangleFigure()
         {
-            Name = FigureType.Rectangle.ToString(); ;
-
+            Name = FigureType.Rectangle.ToString();
+            
             X = Random.Next(0, Constants.P_X_MAX);
             Y = Random.Next(0, Constants.P_Y_MAX);
 

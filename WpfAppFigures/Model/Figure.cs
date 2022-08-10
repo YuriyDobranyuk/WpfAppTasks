@@ -9,6 +9,7 @@ namespace WpfAppFigures.Model
     public abstract class Figure : INotifyPropertyChanged
     {
         private bool _isMove;
+        private string _name;
         public bool IsMove
         {
             get { return _isMove; }
@@ -18,13 +19,22 @@ namespace WpfAppFigures.Model
                 OnPropertyChanged();
             }
         }
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                _name = value;
+                OnPropertyChanged();
+            }
+        }
 
         protected double X { get; set; }
         protected double Y { get; set; }
         protected double DX { get; set; }
         protected double DY { get; set; }
 
-        public string Name { get; set; }
+        //public string Name { get; set; }
         public Shape Shape { get; set; }
         public DispatcherTimer Timer { get; set; }
         public Brush Color { get; set; }

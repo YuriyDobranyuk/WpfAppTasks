@@ -5,8 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfAppFigures"
         xmlns:views="clr-namespace:WpfAppFigures.View.Pages" 
+        xmlns:p = "clr-namespace:WpfAppFigures.Properties"
         mc:Ignorable="d"
-        Title="AppFigures" Height="450" Width="800">
+        Title="{DynamicResource NameApp}" Height="450" Width="800">
+    <!-- Title="{x:Static p:Resources.NameApp}" -->
     <Window.Resources>
         <DataTemplate DataType="{x:Type views:FiguresPage}">
             <views:FiguresPage/>
