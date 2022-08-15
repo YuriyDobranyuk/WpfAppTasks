@@ -4,24 +4,25 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using WpfAppFigures.Common;
 using WpfAppFigures.Enums;
+using WpfLibraryParamsFigure;
 
 namespace WpfAppFigures.Model
 {
     public class CircleFigure : Figure
     {
-        private Random Random = new Random();
+        //private Random Random = new Random();
 
         public CircleFigure()
         {
             Name = FigureType.Circle.ToString();
-           
-            X = Random.Next(0, Constants.P_X_MAX);
-            Y = Random.Next(0, Constants.P_Y_MAX);
 
-            DX = Constants.DELTA_COORDINATES[Random.Next(0, Constants.DELTA_COORDINATES.Length)];
-            DY = Constants.DELTA_COORDINATES[Random.Next(0, Constants.DELTA_COORDINATES.Length)];
+            X = RandomParamsFigure.GetRandomCoordinate(0, Constants.P_X_MAX);
+            Y = RandomParamsFigure.GetRandomCoordinate(0, Constants.P_Y_MAX);
 
-            Color = new SolidColorBrush(System.Windows.Media.Color.FromRgb((byte)Random.Next(0, 255), (byte)Random.Next(0, 255), (byte)Random.Next(0, 255)));
+            DX = RandomParamsFigure.GetRandomDeltaCoordinate(Constants.DELTA_COORDINATES);
+            DY = RandomParamsFigure.GetRandomDeltaCoordinate(Constants.DELTA_COORDINATES);
+
+            Color = RandomParamsFigure.GetRandomColor();
 
             Draw();
         }

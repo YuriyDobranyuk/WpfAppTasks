@@ -34,7 +34,6 @@ namespace WpfAppFigures.Model
         protected double DX { get; set; }
         protected double DY { get; set; }
 
-        //public string Name { get; set; }
         public Shape Shape { get; set; }
         public DispatcherTimer Timer { get; set; }
         public Brush Color { get; set; }
