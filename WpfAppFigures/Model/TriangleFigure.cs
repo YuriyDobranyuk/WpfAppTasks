@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -11,8 +10,6 @@ namespace WpfAppFigures.Model
 {
     public class TriangleFigure : Figure
     {
-        private Random Random = new Random();
-
         public TriangleFigure()
         {
             Name = FigureType.Triangle.ToString();

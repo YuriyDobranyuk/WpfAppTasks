@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using WpfAppFigures.Common;
@@ -10,8 +9,6 @@ namespace WpfAppFigures.Model
 {
     public class CircleFigure : Figure
     {
-        //private Random Random = new Random();
-
         public CircleFigure()
         {
             Name = FigureType.Circle.ToString();
