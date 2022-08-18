@@ -1,28 +1,26 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using WpfAppFigures.Common;
 using WpfAppFigures.Enums;
+using WpfLibraryParamsFigure;
 
 namespace WpfAppFigures.Model
 {
     public class TriangleFigure : Figure
     {
-        private Random Random = new Random();
-
         public TriangleFigure()
         {
             Name = FigureType.Triangle.ToString();
 
-            X = Random.Next(0, Constants.P_X_MAX);
-            Y = Random.Next(0, Constants.P_Y_MAX);
+            X = RandomParamsFigure.GetRandomCoordinate(0, Constants.P_X_MAX);
+            Y = RandomParamsFigure.GetRandomCoordinate(0, Constants.P_Y_MAX);
 
-            DX = Constants.DELTA_COORDINATES[Random.Next(0, Constants.DELTA_COORDINATES.Length)];
-            DY = Constants.DELTA_COORDINATES[Random.Next(0, Constants.DELTA_COORDINATES.Length)];
+            DX = RandomParamsFigure.GetRandomDeltaCoordinate(Constants.DELTA_COORDINATES);
+            DY = RandomParamsFigure.GetRandomDeltaCoordinate(Constants.DELTA_COORDINATES);
 
-            Color = new SolidColorBrush(System.Windows.Media.Color.FromRgb((byte)Random.Next(0, 255), (byte)Random.Next(0, 255), (byte)Random.Next(0, 255)));
+            Color = RandomParamsFigure.GetRandomColor();
 
             Draw();
         }
