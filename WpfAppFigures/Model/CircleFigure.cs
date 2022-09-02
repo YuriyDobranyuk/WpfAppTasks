@@ -66,5 +66,6 @@ namespace WpfAppFigures.Model
             Canvas.SetLeft(Shape, X);
             Canvas.SetTop(Shape, Y);
         }
+
     }
 }

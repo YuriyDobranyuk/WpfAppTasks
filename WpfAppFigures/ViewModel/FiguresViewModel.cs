@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Media;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using WpfAppFigures.Model;
 using WpfAppFigures.Services.Commands;
+using WpfAppFigures.Services.Events;
 
 namespace WpfAppFigures.ViewModel
 {
@@ -26,6 +29,9 @@ namespace WpfAppFigures.ViewModel
             SelectFigureCommand = new LambdaCommand(OnSelectFigureCommandExecute, CanSelectFigureCommandExecute);
             ClickStopMoveShapeCommand = new LambdaCommand(OnClickStopMoveShapeCommandExecute, CanClickStopMoveShapeCommandExecute);
             ChangeCurrentCultureCommand = new LambdaCommand(OnChangeCurrentCultureCommandExecute, CanChangeCurrentCultureCommandExecute);
+            AddFunctionForEventCrossingCommand = new LambdaCommand(OnAddFunctionForEventCrossingCommandExecute, CanAddFunctionForEventCrossingCommandExecute);
+            RemoveFunctionForEventCrossingCommand = new LambdaCommand(OnRemoveFunctionForEventCrossingCommandExecute, CanRemoveFunctionForEventCrossingCommandExecute);
+
         }
 
         #region Commands
@@ -35,12 +41,18 @@ namespace WpfAppFigures.ViewModel
         private void OnSelectFigureCommandExecute(object p)
         {
             var figure = p as Figure;
+            var nameFigure = figure.Name;
+
+            figure.AddTimerFigure();
+            //figure.NewIntersectionFigures += OnFigureCross;
 
             figure.Move();
+            figure.AddFigureToManagerFigure();
+
             Figures.Add(figure);
             FiguresShape.Add(figure.Shape);
 
-            ResetParameters();
+            ResetParameters(nameFigure);
         }
         #endregion
         #region StopMoveShapeCommand
@@ -52,6 +64,8 @@ namespace WpfAppFigures.ViewModel
 
             currentFigure.Timer.IsEnabled = currentFigure.Timer.IsEnabled ? false : true;
             currentFigure.IsMove = currentFigure.Timer.IsEnabled;
+
+            //RenderedIntersect(currentFigure, Figures);
         }
         #endregion
         #region ChangeCurrentCultureCommand
@@ -60,8 +74,6 @@ namespace WpfAppFigures.ViewModel
         private void OnChangeCurrentCultureCommandExecute(object p)
         {
             var currentCulture = p.ToString();
-            //Thread.CurrentThread.CurrentUICulture = new CultureInfo(currentCulture);
-            //Thread.CurrentThread.CurrentCulture = new CultureInfo(currentCulture);
 
             ResourceDictionary dict = new ResourceDictionary();
 
@@ -81,19 +93,60 @@ namespace WpfAppFigures.ViewModel
 
         }
         #endregion
+        #region AddFunctionForEventCrossingCommand
+        public ICommand AddFunctionForEventCrossingCommand { get; }
+        private bool CanAddFunctionForEventCrossingCommandExecute(object p)
+        {
+            var figure = p as Figure;
+            return figure != null;
+        }
+        private void OnAddFunctionForEventCrossingCommandExecute(object p)
+        {
+            var figure = p as Figure;
+            figure.NewIntersectionFigures += OnFigureCross;
+        }
+        #endregion
+        #region RemoveFunctionForEventCrossingCommand
+        public ICommand RemoveFunctionForEventCrossingCommand { get; }
+        private bool CanRemoveFunctionForEventCrossingCommandExecute(object p)
+        {
+            var figure = p as Figure;
+            return figure != null;
+        }
+        private void OnRemoveFunctionForEventCrossingCommandExecute(object p)
+        {
+            var figure = p as Figure;
+            figure.NewIntersectionFigures -= OnFigureCross;
+        }
+        #endregion
         #endregion
 
-        private void ResetParameters()
+        private void ResetParameters(string name)
         {
-            Circle = new CircleFigure();
-            Rectangle = new RectangleFigure();
-            Triangle = new TriangleFigure();
-
-            OnPropertyChanged(nameof(Circle));
-            OnPropertyChanged(nameof(Rectangle));
-            OnPropertyChanged(nameof(Triangle));
+            switch (name)
+            {
+                case "Circle":
+                    Circle = new CircleFigure();
+                    OnPropertyChanged(nameof(Circle));
+                    break;
+                case "Rectangle":
+                    Rectangle = new RectangleFigure();
+                    OnPropertyChanged(nameof(Rectangle));
+                    break;
+                case "Triangle":
+                    Triangle = new TriangleFigure();
+                    OnPropertyChanged(nameof(Triangle));
+                    break;
+            } 
         }
-        
+
+        public void OnFigureCross(object sender, NewIntersectionFiguresEventArgs e)
+        {
+            Debug.WriteLine($"Figure {e.Name} crossed. Coordinates X - ({e.X}), Y - ({e.Y})");
+            SystemSounds.Beep.Play();
+        }
+
+
     }
 }
 

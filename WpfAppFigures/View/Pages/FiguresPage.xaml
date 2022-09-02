@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:viewmodel="clr-namespace:WpfAppFigures.ViewModel" 
+      
       d:DataContext="{d:DesignInstance Type=viewmodel:FiguresViewModel}"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800">
@@ -59,6 +60,7 @@
                           CommandParameter="ru-RU" />
             </MenuItem>
         </Menu>
+        
         <ToolBar Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Width="170">
             <Button Command="{Binding SelectFigureCommand}" 
                     CommandParameter="{Binding Triangle}"
@@ -101,6 +103,24 @@
                          VerticalAlignment="Center"/>
             </Button>
         </ToolBar>
+
+        <ToolBar Height="40" VerticalAlignment="Top" Margin="60,0,0,0" Width="110" HorizontalAlignment="Right">
+            <Button Command="{Binding RemoveFunctionForEventCrossingCommand}" 
+                    CommandParameter="{Binding ElementName=myTreeView, Path=SelectedItem}"
+                    Width="30" 
+                    Height="30" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Right">
+                -
+            </Button>
+            <Separator Margin="10 0" />
+            <Button Command="{Binding AddFunctionForEventCrossingCommand}" 
+                    CommandParameter="{Binding ElementName=myTreeView, Path=SelectedItem}"
+                    Width="30" 
+                    Height="30">
+                +
+            </Button>
+        </ToolBar>
         
         <WrapPanel Orientation="Horizontal" Width="800" Margin="0 40 0 0">
             <TreeView BorderThickness="1"
@@ -109,16 +129,35 @@
                       Height="410" 
                       HorizontalContentAlignment="Left"
                       HorizontalAlignment="Left"
-                      Width="130">
-
+                      Width="130"
+                      
+                      x:Name="myTreeView">
+                <TreeView.ItemContainerStyle>
+                    
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="FontWeight" Value="Normal" />
+                        <Setter Property="Tag" Value="{Binding}" />
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="FontWeight" Value="Bold" />
+                                <Setter Property="Background" Value="#EEF7F6" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate>
                         <TreeViewItem x:Name="TreeViewItemEl"
-                                      Foreground="{Binding Color}">
+                                      Foreground="{Binding Color}"
+                                      Tag="{Binding Id}">
                             <Button Style="{DynamicResource treeViewButtonStyle}" 
                                     Command="{Binding DataContext.ClickStopMoveShapeCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                                     CommandParameter="{Binding}"/>
+
+                            <!--ListBox ItemsSource="{Binding IntersectionPoints}"></ListBox-->
                         </TreeViewItem>
+
                         <HierarchicalDataTemplate.Triggers>
                             <DataTrigger  Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Circle">
                                 <DataTrigger.Setters>
