@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Media;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using WpfAppFigures.Model;
+using WpfAppFigures.Services;
 using WpfAppFigures.Services.Commands;
 using WpfAppFigures.Services.Events;
+
 
 namespace WpfAppFigures.ViewModel
 {
@@ -21,7 +26,21 @@ namespace WpfAppFigures.ViewModel
         public RectangleFigure Rectangle { get; set; } = new RectangleFigure();
         public TriangleFigure Triangle { get; set; } = new TriangleFigure();
 
-        public FiguresViewModel()
+        void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            if (e.Exception is FigurePositionException ex)
+            {
+                var path = "noteFigurePositionException.txt";
+                using (StreamWriter writer = new StreamWriter(path, true))
+                {
+                    writer.WriteLineAsync($"Exception: {ex.ParamName}. Name: {ex.Figure.Name}. Id: {ex.Figure.Id}. Point: {ex.PositionFigure.ToString()}. Date: {DateTime.Now.ToString("HH:mm:ss dd.MM.yyyy")}.");
+                }
+                e.Handled = true;
+                ex.Figure.SetVisibleCoordinate();
+            }
+        }
+
+        public FiguresViewModel(Dispatcher Dispatcher)
         {
             Figures = new ObservableCollection<Figure>();
             FiguresShape = new ObservableCollection<Shape>();
@@ -31,7 +50,9 @@ namespace WpfAppFigures.ViewModel
             ChangeCurrentCultureCommand = new LambdaCommand(OnChangeCurrentCultureCommandExecute, CanChangeCurrentCultureCommandExecute);
             AddFunctionForEventCrossingCommand = new LambdaCommand(OnAddFunctionForEventCrossingCommandExecute, CanAddFunctionForEventCrossingCommandExecute);
             RemoveFunctionForEventCrossingCommand = new LambdaCommand(OnRemoveFunctionForEventCrossingCommandExecute, CanRemoveFunctionForEventCrossingCommandExecute);
+            CanvasSizeChangedCommand = new LambdaCommand(OnCanvasSizeChangedCommandExecute, CanCanvasSizeChangedCommandExecute);
 
+            Dispatcher.UnhandledException += OnDispatcherUnhandledException;
         }
 
         #region Commands
@@ -44,9 +65,9 @@ namespace WpfAppFigures.ViewModel
             var nameFigure = figure.Name;
 
             figure.AddTimerFigure();
-            //figure.NewIntersectionFigures += OnFigureCross;
 
             figure.Move();
+            
             figure.AddFigureToManagerFigure();
 
             Figures.Add(figure);
@@ -119,6 +140,17 @@ namespace WpfAppFigures.ViewModel
             figure.NewIntersectionFigures -= OnFigureCross;
         }
         #endregion
+        #region CanvasSizeChangedCommand
+        public ICommand CanvasSizeChangedCommand { get; }
+        private bool CanCanvasSizeChangedCommandExecute(object p) => true;
+        
+        private void OnCanvasSizeChangedCommandExecute(object p)
+        {
+            var c = p as Canvas; 
+            Common.Common.P_X_MAX = (int) c.ActualWidth - 20;
+            Common.Common.P_Y_MAX = (int) c.ActualHeight - 20;
+        }
+        #endregion
         #endregion
 
         private void ResetParameters(string name)
@@ -137,7 +169,7 @@ namespace WpfAppFigures.ViewModel
                     Triangle = new TriangleFigure();
                     OnPropertyChanged(nameof(Triangle));
                     break;
-            } 
+            }
         }
 
         public void OnFigureCross(object sender, NewIntersectionFiguresEventArgs e)
@@ -145,7 +177,6 @@ namespace WpfAppFigures.ViewModel
             Debug.WriteLine($"Figure {e.Name} crossed. Coordinates X - ({e.X}), Y - ({e.Y})");
             SystemSounds.Beep.Play();
         }
-
 
     }
 }

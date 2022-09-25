@@ -11,8 +11,7 @@ namespace WpfAppFigures.View.Pages
         public FiguresPage()
         {
             InitializeComponent();
-            DataContext = new FiguresViewModel();
-
+            DataContext = new FiguresViewModel(Dispatcher);
         }
     }
 }

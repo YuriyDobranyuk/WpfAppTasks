@@ -4,6 +4,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using WpfAppFigures.Common;
 using WpfAppFigures.Enums;
+using WpfAppFigures.Services;
 using WpfLibraryParamsFigure;
 
 namespace WpfAppFigures.Model
@@ -14,8 +15,8 @@ namespace WpfAppFigures.Model
         {
             Name = FigureType.Triangle.ToString();
 
-            X = RandomParamsFigure.GetRandomCoordinate(0, Constants.P_X_MAX);
-            Y = RandomParamsFigure.GetRandomCoordinate(0, Constants.P_Y_MAX);
+            X = RandomParamsFigure.GetRandomCoordinate(0, Common.Common.P_X_MAX);
+            Y = RandomParamsFigure.GetRandomCoordinate(0, Common.Common.P_Y_MAX);
 
             DX = RandomParamsFigure.GetRandomDeltaCoordinate(Constants.DELTA_COORDINATES);
             DY = RandomParamsFigure.GetRandomDeltaCoordinate(Constants.DELTA_COORDINATES);
@@ -31,18 +32,23 @@ namespace WpfAppFigures.Model
 
             Timer.Tick += (sender, e) =>
             {
-                if (X < 0 || X > Constants.P_X_MAX)
+                if (X <= 0 || X >= Common.Common.P_X_MAX)
                 {
                     DX = -DX;
                 }
 
-                if (Y < 0 || Y > Constants.P_Y_MAX)
+                if (Y <= 0 || Y >= Common.Common.P_Y_MAX)
                 {
                     DY = -DY;
                 }
 
                 X += DX;
                 Y += DY;
+
+                if (X > Common.Common.P_X_MAX || Y > Common.Common.P_Y_MAX)
+                {
+                    throw new FigurePositionException("Figures on the not canvas", this);
+                }
 
                 Canvas.SetLeft(Shape, X);
                 Canvas.SetTop(Shape, Y);
@@ -67,6 +73,20 @@ namespace WpfAppFigures.Model
 
             Canvas.SetLeft(Shape, X);
             Canvas.SetTop(Shape, Y);
+        }
+
+        public override void SetVisibleCoordinate()
+        {
+            if (X > Common.Common.P_X_MAX)
+            {
+                X = Common.Common.P_X_MAX;
+            }
+            if (Y > Common.Common.P_Y_MAX)
+            {
+                Y = Common.Common.P_Y_MAX;
+            }
+            Timer.IsEnabled = false;
+            Timer.IsEnabled = true;
         }
 
     }
