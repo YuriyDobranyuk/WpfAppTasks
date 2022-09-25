@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:viewmodel="clr-namespace:WpfAppFigures.ViewModel" 
-      
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
       d:DataContext="{d:DesignInstance Type=viewmodel:FiguresViewModel}"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800">
@@ -49,8 +49,18 @@
         </Style>
     </Page.Resources>
 
-    <Grid>
-        <Menu Height="20" Width="40" VerticalAlignment="Top" HorizontalAlignment="Left">
+    <Grid Width="auto">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Menu Height="20" Width="40" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0">
             <MenuItem Header="{DynamicResource MenuLang}">
                 <MenuItem Header="{DynamicResource MenuItemEn}" 
                           Command="{Binding ChangeCurrentCultureCommand}" 
@@ -60,8 +70,7 @@
                           CommandParameter="ru-RU" />
             </MenuItem>
         </Menu>
-        
-        <ToolBar Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Width="170">
+        <ToolBar Height="40" VerticalAlignment="Top" HorizontalAlignment="Center" Width="170" Grid.Row="0" Grid.Column="1">
             <Button Command="{Binding SelectFigureCommand}" 
                     CommandParameter="{Binding Triangle}"
                     Width="30" 
@@ -103,8 +112,7 @@
                          VerticalAlignment="Center"/>
             </Button>
         </ToolBar>
-
-        <ToolBar Height="40" VerticalAlignment="Top" Margin="60,0,0,0" Width="110" HorizontalAlignment="Right">
+    <ToolBar Height="40" VerticalAlignment="Top" Margin="60,0,0,0" Width="110" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="2">
             <Button Command="{Binding RemoveFunctionForEventCrossingCommand}" 
                     CommandParameter="{Binding ElementName=myTreeView, Path=SelectedItem}"
                     Width="30" 
@@ -122,73 +130,82 @@
             </Button>
         </ToolBar>
         
-        <WrapPanel Orientation="Horizontal" Width="800" Margin="0 40 0 0">
-            <TreeView BorderThickness="1"
-                      BorderBrush="Black"
-                      ItemsSource="{Binding Figures, UpdateSourceTrigger=PropertyChanged}" 
-                      Height="410" 
-                      HorizontalContentAlignment="Left"
-                      HorizontalAlignment="Left"
-                      Width="130"
-                      
-                      x:Name="myTreeView">
-                <TreeView.ItemContainerStyle>
-                    
-                    <Style TargetType="{x:Type TreeViewItem}">
-                        <Setter Property="FontWeight" Value="Normal" />
-                        <Setter Property="Tag" Value="{Binding}" />
-                        <Style.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="FontWeight" Value="Bold" />
-                                <Setter Property="Background" Value="#EEF7F6" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </TreeView.ItemContainerStyle>
-                
-                <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate>
-                        <TreeViewItem x:Name="TreeViewItemEl"
+        <TreeView BorderThickness="1"
+                  BorderBrush="Black"
+                  ItemsSource="{Binding Figures, UpdateSourceTrigger=PropertyChanged}" 
+                  MinHeight="200" 
+                  MinWidth="130"
+                  HorizontalContentAlignment="Left"
+                  HorizontalAlignment="Left" 
+                  Grid.Row="2" Grid.Column="0"
+                  x:Name="myTreeView">
+            <TreeView.ItemContainerStyle>
+
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="FontWeight" Value="Normal" />
+                    <Setter Property="Tag" Value="{Binding}" />
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="FontWeight" Value="Bold" />
+                            <Setter Property="Background" Value="#EEF7F6" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TreeView.ItemContainerStyle>
+
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate>
+                    <TreeViewItem x:Name="TreeViewItemEl"
                                       Foreground="{Binding Color}"
                                       Tag="{Binding Id}">
-                            <Button Style="{DynamicResource treeViewButtonStyle}" 
+                        <Button Style="{DynamicResource treeViewButtonStyle}" 
                                     Command="{Binding DataContext.ClickStopMoveShapeCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                                     CommandParameter="{Binding}"/>
 
-                            <!--ListBox ItemsSource="{Binding IntersectionPoints}"></ListBox-->
-                        </TreeViewItem>
+                        <!--ListBox ItemsSource="{Binding IntersectionPoints}"></ListBox-->
+                    </TreeViewItem>
 
-                        <HierarchicalDataTemplate.Triggers>
-                            <DataTrigger  Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Circle">
-                                <DataTrigger.Setters>
-                                    <Setter TargetName="TreeViewItemEl" Property="Header" Value="{DynamicResource NameFigureCircle}"></Setter>
-                                </DataTrigger.Setters>
-                            </DataTrigger>
-                            <DataTrigger  Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Triangle">
-                                <DataTrigger.Setters>
-                                    <Setter TargetName="TreeViewItemEl" Property="Header" Value="{DynamicResource NameFigureTriangle}"></Setter>
-                                </DataTrigger.Setters>
-                            </DataTrigger>
-                            <DataTrigger  Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Rectangle">
-                                <DataTrigger.Setters>
-                                    <Setter TargetName="TreeViewItemEl" Property="Header" Value="{DynamicResource NameFigureRectangle}"></Setter>
-                                </DataTrigger.Setters>
-                            </DataTrigger>
-                        </HierarchicalDataTemplate.Triggers>
-                    </HierarchicalDataTemplate>
-                </TreeView.ItemTemplate>
-                
-            </TreeView>
+                    <HierarchicalDataTemplate.Triggers>
+                        <DataTrigger  Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Circle">
+                            <DataTrigger.Setters>
+                                <Setter TargetName="TreeViewItemEl" Property="Header" Value="{DynamicResource NameFigureCircle}"></Setter>
+                            </DataTrigger.Setters>
+                        </DataTrigger>
+                        <DataTrigger  Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Triangle">
+                            <DataTrigger.Setters>
+                                <Setter TargetName="TreeViewItemEl" Property="Header" Value="{DynamicResource NameFigureTriangle}"></Setter>
+                            </DataTrigger.Setters>
+                        </DataTrigger>
+                        <DataTrigger  Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Rectangle">
+                            <DataTrigger.Setters>
+                                <Setter TargetName="TreeViewItemEl" Property="Header" Value="{DynamicResource NameFigureRectangle}"></Setter>
+                            </DataTrigger.Setters>
+                        </DataTrigger>
+                    </HierarchicalDataTemplate.Triggers>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
 
-            <ItemsControl ItemsSource="{Binding FiguresShape}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Canvas Height="410" Width="670" Background="WhiteSmoke"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
-            
-        </WrapPanel>
-        
+        <ItemsControl x:Name="parentCanvasBlock"
+                      ItemsSource="{Binding FiguresShape}" 
+                      Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas x:Name="mainCanvasBlock" Background="WhiteSmoke" >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SizeChanged">
+                                <i:EventTrigger.Actions>
+                                    <i:InvokeCommandAction Command="{Binding DataContext.CanvasSizeChangedCommand,  RelativeSource={RelativeSource AncestorType=Page}}">
+                                        <i:InvokeCommandAction.CommandParameter>
+                                            <Binding ElementName="mainCanvasBlock"/>
+                                        </i:InvokeCommandAction.CommandParameter>
+                                    </i:InvokeCommandAction>
+                                </i:EventTrigger.Actions>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Canvas>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
     </Grid>
 </Page>

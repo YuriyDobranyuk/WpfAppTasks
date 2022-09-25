@@ -105,5 +105,6 @@ namespace WpfAppFigures.Model
 
         public abstract void Move();
         public abstract void Draw();
+        public abstract void SetVisibleCoordinate();
     }
 }
