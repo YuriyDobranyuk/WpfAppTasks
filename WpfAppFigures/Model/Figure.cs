@@ -22,9 +22,12 @@ namespace WpfAppFigures.Model
         public ObservableCollection<Point> IntersectionPoints { get; set; }
         public List<Figure> CrossingFigures { get; set; }
         
+        public ParamsFigure<int> HalfParamsFigure { get; }
+
         protected Figure()
         {
             IntersectionPoints = new ObservableCollection<Point>();
+            HalfParamsFigure = new ParamsFigure<int>(Constants.SIZE_HALF_FIGURE, Constants.DELTA_COORDINATES);
         }
         
         public void AddTimerFigure()
@@ -49,10 +52,11 @@ namespace WpfAppFigures.Model
         //four stage event by Righter
         public void CheckFigureCrossing(object sender, EventArgs e)
         {
-            var minXValue = X - Constants.SIZE_HALF_FIGURE;
-            var maxXValue = X + Constants.SIZE_HALF_FIGURE;
-            var minYValue = Y - Constants.SIZE_HALF_FIGURE;
-            var maxYValue = Y + Constants.SIZE_HALF_FIGURE;
+            
+            var minXValue = X - HalfParamsFigure.SizeHalfFigure;
+            var maxXValue = X + HalfParamsFigure.SizeHalfFigure;
+            var minYValue = Y - HalfParamsFigure.SizeHalfFigure;
+            var maxYValue = Y + HalfParamsFigure.SizeHalfFigure;
 
             var crossedFigures = FigureManager.GetFiguresByName(Name).Where(x => (x.X > minXValue && x.X < maxXValue && x.Y > minYValue && x.Y < maxYValue && x.Id != Id)).ToList();
 
@@ -106,5 +110,8 @@ namespace WpfAppFigures.Model
         public abstract void Move();
         public abstract void Draw();
         public abstract void SetVisibleCoordinate();
+        public abstract void SetCoordinate();
+        public abstract void SetPositionOnCanvas();
+
     }
 }
