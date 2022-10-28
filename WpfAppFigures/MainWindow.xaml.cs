@@ -13,15 +13,7 @@ namespace WpfAppFigures
         {
             InitializeComponent();
             this.Content = new FiguresPage();
-
-            //this.SizeChanged += OnWindowSizeChanged;
         }
-        /*protected void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            double newWindowHeight = e.NewSize.Height;
-            double newWindowWidth = e.NewSize.Width;
-            double prevWindowHeight = e.PreviousSize.Height;
-            double prevWindowWidth = e.PreviousSize.Width;
-        }*/
+       
     }
 }

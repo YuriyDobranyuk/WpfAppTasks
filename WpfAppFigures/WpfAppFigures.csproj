@@ -81,6 +81,7 @@
     <Compile Include="Common\CrossedPoint.cs" />
     <Compile Include="Common\Enums\FigureType.cs" />
     <Compile Include="Common\Enums\TimerButtonType.cs" />
+    <Compile Include="Common\ParamsFigure.cs" />
     <Compile Include="Model\CircleFigure.cs" />
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Model\Figure.cs" />

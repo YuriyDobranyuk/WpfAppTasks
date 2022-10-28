@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Media;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -14,11 +16,11 @@ using WpfAppFigures.Services;
 using WpfAppFigures.Services.Commands;
 using WpfAppFigures.Services.Events;
 
-
 namespace WpfAppFigures.ViewModel
 {
     public class FiguresViewModel : BaseViewModel
     {
+        private static readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
         public ObservableCollection<Figure> Figures { get; set; }
         public ObservableCollection<Shape> FiguresShape { get; set; }
 
@@ -31,10 +33,8 @@ namespace WpfAppFigures.ViewModel
             if (e.Exception is FigurePositionException ex)
             {
                 var path = "noteFigurePositionException.txt";
-                using (StreamWriter writer = new StreamWriter(path, true))
-                {
-                    writer.WriteLineAsync($"Exception: {ex.ParamName}. Name: {ex.Figure.Name}. Id: {ex.Figure.Id}. Point: {ex.PositionFigure.ToString()}. Date: {DateTime.Now.ToString("HH:mm:ss dd.MM.yyyy")}.");
-                }
+                Task.Run(() => WriteToFile(path, ex));
+                
                 e.Handled = true;
                 ex.Figure.SetVisibleCoordinate();
             }
@@ -63,11 +63,11 @@ namespace WpfAppFigures.ViewModel
         {
             var figure = p as Figure;
             var nameFigure = figure.Name;
-
+            
             figure.AddTimerFigure();
 
             figure.Move();
-            
+           
             figure.AddFigureToManagerFigure();
 
             Figures.Add(figure);
@@ -177,6 +177,16 @@ namespace WpfAppFigures.ViewModel
             Debug.WriteLine($"Figure {e.Name} crossed. Coordinates X - ({e.X}), Y - ({e.Y})");
             SystemSounds.Beep.Play();
         }
+
+        async Task WriteToFile(string path, FigurePositionException ex)
+        {
+            using (StreamWriter writer = new StreamWriter(path, true))
+            {
+                await _semaphoreSlim.WaitAsync();
+                await writer.WriteLineAsync($"Exception: {ex.ParamName}. Name: {ex.Figure.Name}. Id: {ex.Figure.Id}. Point: {ex.PositionFigure.ToString()}. Date: {DateTime.Now.ToString("HH:mm:ss dd.MM.yyyy")}.");
+                _semaphoreSlim.Release();
+            }
+        } 
 
     }
 }
